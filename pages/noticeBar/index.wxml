@@ -1,0 +1,7 @@
+<view class="notice-bar">
+  <view class="notice-marquee">
+    <view class="notice-item" animation="{{animationData}}" style="left:{{marqueeDistance}}rpx;">
+      <view class="notice-text">start-1-2-3-4-5-6-7-8-9-end</view>
+    </view>
+  </view>
+</view>

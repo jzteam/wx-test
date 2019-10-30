@@ -1,0 +1,23 @@
+.notice-bar {
+  height: 72rpx;
+  width: 600rpx;
+  padding: 30rpx 0 0 30rpx;
+  line-height: 72rpx;
+  font-size: 40rpx;
+  /*@include flex-row-center;*/
+
+  .notice-marquee {
+    position: relative;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 95%;
+    background-color: #ffddcc;
+  }
+  .notice-item{
+    position: absolute;
+    width: 600rpx;
+    height: 100%;
+    background-color: #ffddcc;
+  }
+}
