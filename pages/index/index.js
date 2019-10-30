@@ -52,7 +52,8 @@ Page({
       hasUserInfo: true
     })
   },
-
+  // translateX，其指定的距离不可控，正负两个位置移动时，ios会跳到未知位置，改用translate
+  // translationend 事件是每一个step结束都会触发一次，但是 duration=0 时，动作结束不会触发 translationend 事件
   speed: 10, // 每px耗时10ms
   strLen: 250,
   boundingWidth: 250,
@@ -61,7 +62,7 @@ Page({
     // this.marquee(225, 250)
     console.log('首次动画--------------->')
     let initAnimation = wx.createAnimation({duration: (this.strLen + this.boundingWidth) * this.speed, timingFunction: 'linear'})
-      .translateX(-this.strLen - this.boundingWidth).step()
+      .translate(-this.strLen - this.boundingWidth, 0).step()
     this.setData({
       animationData: initAnimation.export()
     })
@@ -70,24 +71,39 @@ Page({
   flag: 0, // 0-左移，1-右归
   animationendHandle (event) {
     console.log('动画完成，触发事件：', event, this.flag)
-    if(this.flag === 0) {
-      // 左移完成，触发右归
-      let leftAnimation = wx.createAnimation({duration: 1, timingFunction: 'step-start'}).translateX(0).step()
-      this.setData({
-        animationData: leftAnimation.export()
-      }, ()=>{
-        this.flag = 1
-      })
-    } else {
-      // 右归完成，触发左移
-      let rightAnimation = wx.createAnimation({duration: (this.strLen + this.boundingWidth) * this.speed, timingFunction: 'linear'})
+    let leftAnimation = wx.createAnimation().translate(0, 0).step({ duration: 0})
+      
+    this.setData({
+      animationData: leftAnimation.export()
+    }, ()=>{
+      console.log('setdata 回调')
+      let initAnimation = wx.createAnimation({ duration: (this.strLen + this.boundingWidth) * this.speed, timingFunction: 'linear' })
         .translateX(-this.strLen - this.boundingWidth).step()
       this.setData({
-        animationData: rightAnimation.export()
-      }, ()=>{
-        this.flag = 0
+        animationData: initAnimation.export()
       })
-    }
+    })
+
+    
+    // console.log('动画完成，触发事件：', event, this.flag)
+    // if(this.flag === 0) {
+    //   // 左移完成，触发右归
+    //   let leftAnimation = wx.createAnimation({duration: 0, timingFunction: 'step-start'}).translate(0, 0).step()
+    //   this.setData({
+    //     animationData: leftAnimation.export()
+    //   }, ()=>{
+    //     this.flag = 1
+    //   })
+    // } else {
+    //   // 右归完成，触发左移
+    //   let rightAnimation = wx.createAnimation({duration: (this.strLen + this.boundingWidth) * this.speed, timingFunction: 'linear'})
+    //     .translateX(-this.strLen - this.boundingWidth).step()
+    //   this.setData({
+    //     animationData: rightAnimation.export()
+    //   }, ()=>{
+    //     this.flag = 0
+    //   })
+    // }
   },
   
   marqueeOverall (strLen, boundingWidth) {
