@@ -54,37 +54,37 @@ Page({
   },
   // translateX，其指定的距离不可控，正负两个位置移动时，ios会跳到未知位置，改用translate
   // translationend 事件是每一个step结束都会触发一次，但是 duration=0 时，动作结束不会触发 translationend 事件
+  // 每次 createAnimation() 时都是以当前位置作为原点，对象不换，原点不变
   speed: 10, // 每px耗时10ms
-  strLen: 250,
-  boundingWidth: 250,
+  strLen: 240,
+  boundingWidth: 240,
+  currentAnimation: null,
   onReady: function () {
-    console.log('onReady----start')
-    // this.marquee(225, 250)
     console.log('首次动画--------------->')
-    let initAnimation = wx.createAnimation({duration: (this.strLen + this.boundingWidth) * this.speed, timingFunction: 'linear'})
-      .translate(-this.strLen - this.boundingWidth, 0).step()
+    this.currentAnimation = wx.createAnimation({duration: (this.strLen) * this.speed, timingFunction: 'linear'});
+    this.currentAnimation.translate(-this.strLen, 0).step()
     this.setData({
-      animationData: initAnimation.export()
+      animationData: this.currentAnimation.export()
     })
-    console.log('onReady----end')
   },
-  flag: 0, // 0-左移，1-右归
   animationendHandle (event) {
-    console.log('动画完成，触发事件：', event, this.flag)
-    let leftAnimation = wx.createAnimation().translate(0, 0).step({ duration: 0})
+    let that = this
+    console.log('动画完成，触发事件：', event)
+    that.currentAnimation.translate(0, 0).step({duration: 0})
       
-    this.setData({
-      animationData: leftAnimation.export()
+    that.setData({
+      animationData: that.currentAnimation.export()
     }, ()=>{
       console.log('setdata 回调')
-      let initAnimation = wx.createAnimation({ duration: (this.strLen + this.boundingWidth) * this.speed, timingFunction: 'linear' })
-        .translateX(-this.strLen - this.boundingWidth).step()
-      this.setData({
-        animationData: initAnimation.export()
+      // let animation = wx.createAnimation({ duration: (that.strLen) * that.speed, timingFunction: 'linear' });    
+      that.currentAnimation.translate(-this.strLen, 0).step({ duration: that.strLen * that.speed, timingFunction: 'linear' })
+      that.setData({
+        animationData: that.currentAnimation.export()
       })
     })
+  }
 
-    
+  // animationendHandleTest (event) {
     // console.log('动画完成，触发事件：', event, this.flag)
     // if(this.flag === 0) {
     //   // 左移完成，触发右归
@@ -104,36 +104,36 @@ Page({
     //     this.flag = 0
     //   })
     // }
-  },
+  // }
   
-  marqueeOverall (strLen, boundingWidth) {
-    let speed = 10 // 每px耗时10ms
-    let ani = wx.createAnimation().translateX(boundingWidth).step({duration: 500, timingFunction: 'step-start', delay: 10})
-      .translateX(-strLen).step({duration: (strLen + boundingWidth) * speed, timingFunction: 'linear'})
-    this.setData({
-      animationData: ani.export()
-    })
-  },
-  marquee (strLen, boundingWidth) {
-    let speed = 10 // 每px耗时10ms
-    console.log('首次动画--------------->', strLen, boundingWidth)
-    let animation = wx.createAnimation().translateX(-strLen).step({duration: strLen * speed, timingFunction: 'linear'})
-    this.setData({
-      animationData: animation.export()
-    })
-    console.log('添加监听器--------------->', strLen, boundingWidth)
-    wx.createIntersectionObserver()
-      .relativeToViewport('.notice-marquee', {left: 0, right: 0}).observe('.notice-item', (res) => {
-        console.log('监听成功--------------->', res.intersectionRatio)
-        // 相交区域占目标节点的布局区域的比例
-        if (res.intersectionRatio  === 0) {
-          // 不相交，表示text滚出视野，就重新开始一个动画
-          let animation = wx.createAnimation().translateX(boundingWidth).step({duration: 1, timingFunction: 'step-start', delay: 50})
-            .translateX(-strLen - 2).step({duration: (strLen + boundingWidth + 2) * speed, timingFunction: 'linear'})
-          this.setData({
-            animationData: animation.export()
-          })
-        }
-      })
-  }
+  // marqueeOverall (strLen, boundingWidth) {
+  //   let speed = 10 // 每px耗时10ms
+  //   let ani = wx.createAnimation().translateX(boundingWidth).step({duration: 500, timingFunction: 'step-start', delay: 10})
+  //     .translateX(-strLen).step({duration: (strLen + boundingWidth) * speed, timingFunction: 'linear'})
+  //   this.setData({
+  //     animationData: ani.export()
+  //   })
+  // },
+  // marquee (strLen, boundingWidth) {
+  //   let speed = 10 // 每px耗时10ms
+  //   console.log('首次动画--------------->', strLen, boundingWidth)
+  //   let animation = wx.createAnimation().translateX(-strLen).step({duration: strLen * speed, timingFunction: 'linear'})
+  //   this.setData({
+  //     animationData: animation.export()
+  //   })
+  //   console.log('添加监听器--------------->', strLen, boundingWidth)
+  //   wx.createIntersectionObserver()
+  //     .relativeToViewport('.notice-marquee', {left: 0, right: 0}).observe('.notice-item', (res) => {
+  //       console.log('监听成功--------------->', res.intersectionRatio)
+  //       // 相交区域占目标节点的布局区域的比例
+  //       if (res.intersectionRatio  === 0) {
+  //         // 不相交，表示text滚出视野，就重新开始一个动画
+  //         let animation = wx.createAnimation().translateX(boundingWidth).step({duration: 1, timingFunction: 'step-start', delay: 50})
+  //           .translateX(-strLen - 2).step({duration: (strLen + boundingWidth + 2) * speed, timingFunction: 'linear'})
+  //         this.setData({
+  //           animationData: animation.export()
+  //         })
+  //       }
+  //     })
+  // }
 })

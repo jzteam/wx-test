@@ -13,8 +13,8 @@
   <view style="background-color: green;">测试跑马灯</view>
   <br/>
   <view class="notice-marquee">
-    <view class="notice-item" animation="{{animationData}}" bindtransitionend='animationendHandle' style="left: 500rpx">
-      <view class="notice-text">start-1-2-3-4-5-6-7-8-9-end</view>
+    <view class="notice-item" animation="{{animationData}}" bindtransitionend='animationendHandle'>
+      start-1-2-3-4-5-6-7-8-9-end
     </view>
   </view>
 </view>

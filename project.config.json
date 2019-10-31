@@ -15,7 +15,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "2.9.1",
 	"appid": "wxeffe16929016e895",
-	"projectname": "hellowx",
+	"projectname": "wx-test",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
